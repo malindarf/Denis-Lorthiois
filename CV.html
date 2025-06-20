@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denis Lorthiois - Expert Construction | Saretec</title>
+    <style>
+        /* ===== RESET ET VARIABLES CSS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2c5282;
+            --light-blue: #4299e1;
+            --accent-green: #38a169;
+            --earth-tone: #a0742d;
+            --white: #ffffff;
+            --light-gray: #f7fafc;
+            --dark-gray: #2d3748;
+            --text-gray: #4a5568;
+            --border-gray: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ===== TYPOGRAPHIE ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-gray);
+            background-color: var(--light-gray);
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            border-bottom: 3px solid var(--accent-green);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        /* ===== NAVIGATION FIXE ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(44, 82, 130, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-logo {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-green);
+        }
+
+        /* ===== CONTENEUR PRINCIPAL ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== SECTION HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: var(--white);
+            padding: 8rem 0 4rem;
+            text-align: center;
+            margin-top: 70px;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--white);
+            margin: 0 auto 2rem;
+            background: var(--border-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-gray);
+        }
+
+        .hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .hero .tagline {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .hero .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            border-left: 4px solid var(--accent-green);
+            padding-left: 1rem;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        /* ===== SECTIONS GÉNÉRALES ===== */
+        .section {
+            padding: 4rem 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section:nth-child(even) {
+            background: var(--white);
+        }
+
+        /* ===== SECTION À PROPOS ===== */
+        .about-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .value-item {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        /* ===== SECTION EXPÉRIENCE ===== */
+        .experience-item {
+            background: var(--white);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--earth-tone);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .experience-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .experience-period {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* ===== SECTION PROJETS ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-item {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--accent-green);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* ===== SECTION COMPÉTENCES ===== */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-category {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .skill-category h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-category h3::before {
+            content: "●";
+            color: var(--accent-green);
+            font-size: 1.5rem;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-gray);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .skill-list li::before {
+            content: "▸";
+            color: var(--accent-green);
+            position: absolute;
+            left: 0;
+        }
+
+        .skill-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== SECTION FORMATIONS ===== */
+        .formation-item {
+            background: var(--white);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--light-blue);
+        }
+
+        /* ===== SECTION ENGAGEMENTS ===== */
+        .engagement-item {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        /* ===== SECTION CONTACT ===== */
+        .contact {
+            background: var(--primary-blue);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .contact h2 {
+            color: var(--white);
+            border-bottom-color: var(--accent-green);
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            background: var(--accent-green);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-btn:hover {
+            background: var(--earth-tone);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .nav-menu a {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .hero {
+                padding: 6rem 0 3rem;
+            }
+
+            .experience-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .values-grid,
+            .projects-grid,
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== ANIMATIONS D'APPARITION ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* ===== SCROLL FLUIDE ===== */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVIGATION FIXE ===== -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">Denis Lorthiois</div>
+            <ul class="nav-menu">
+                <li><a href="#hero">Accueil</a></li>
+                <li><a href="#about">À propos</a></li>
+                <li><a href="#experience">Expérience</a></li>
+                <li><a href="#projects">Projets</a></li>
+                <li><a href="#skills">Compétences</a></li>
+                <li><a href="#formations">Formations</a></li>
+                <li><a href="#engagements">Engagements</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== SECTION HERO / IDENTITÉ ===== -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <!-- Emplacement pour photo de profil (à remplacer par une vraie image) -->
+            <div class="profile-photo">👤</div>
+            <h1>Denis Lorthiois</h1>
+            <div class="subtitle">Expert Construction | Saretec</div>
+            <div class="tagline">La nature, l'humain et la technologie</div>
+            <div class="quote">
+                « Construire l'avenir, c'est oser créer avec intelligence. »
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION À PROPOS / VALEURS ===== -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>À propos</h2>
+            <div class="about-content">
+                <p>
+                    Expert passionné alliant expertise technique et vision humaine, je cultive des valeurs profondes qui guident chacune de mes actions professionnelles. Mon approche se caractérise par un respect inconditionnel de la nature, une sobriété assumée et une responsabilité écologique constante. L'empathie, l'écoute active et l'intelligence émotionnelle constituent le socle de mes relations humaines, tandis que la rigueur, l'intégrité et le sens de la justice orientent mes décisions techniques.
+                </p>
+                <p>
+                    Animé par un esprit pionnier, je m'engage dans la recherche et l'innovation tout en conservant un discernement éthique permanent. Cette démarche s'enrichit d'une hybridation unique de compétences mêlant ingénierie, digital, management, créativité et sensibilité artistique. Ma conviction profonde : l'expertise ne trouve sa valeur que si elle bénéficie authentiquement à l'humain et au vivant.
+                </p>
+            </div>
+            
+            <div class="values-grid">
+                <div class="value-item">
+                    <h3>🌱 Écologie & Sobriété</h3>
+                    <p>Respect de la nature, sobriété et responsabilité écologique dans chaque projet et décision professionnelle.</p>
+                </div>
+                <div class="value-item">
+                    <h3>🤝 Humanité & Empathie</h3>
+                    <p>Écoute active, intelligence émotionnelle et bienveillance au cœur des relations professionnelles.</p>
+                </div>
+                <div class="value-item">
+                    <h3>⚖️ Intégrité & Justice</h3>
+                    <p>Rigueur, intégrité et sens de la justice comme fondements de l'expertise professionnelle.</p>
+                </div>
+                <div class="value-item">
+                    <h3>🚀 Innovation Éthique</h3>
+                    <p>Esprit pionnier dans la recherche et l'innovation, toujours guidé par un discernement éthique.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION EXPÉRIENCES PROFESSIONNELLES ===== -->
+    <section id="experience" class="section">
+        <div class="container">
+            <h2>Expérience Professionnelle</h2>
+            
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div>
+                        <h3>Expert Construction</h3>
+                        <p><strong>Saretec</strong></p>
+                    </div>
+                    <div class="experience-period">2012 – aujourd'hui</div>
+                </div>
+                <p>
+                    Gestion d'expertises pour assureurs avec une approche technique rigoureuse et humaine. Responsable de l'analyse documentaire approfondie, de la conduite de projets complexes et de l'optimisation des processus métier. Développement d'une approche basée sur l'humanité et la bienveillance dans la relation client et la résolution de sinistres.
+                </p>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div>
+                        <h3>Manager Construction</h3>
+                        <p><strong>Diverses entreprises</strong></p>
+                    </div>
+                    <div class="experience-period">1997 – 2012</div>
+                </div>
+                <p>
+                    Encadrement d'équipes pluridisciplinaires et pilotage de chantiers avec un focus sur l'innovation écologique. Gestion des risques, contrôle budgétaire et formation d'équipes. Animation de démarches qualité et environnementale, contribuant à l'amélioration continue des pratiques du secteur.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION PROJETS & RÉALISATIONS ===== -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2>Projets & Réalisations</h2>
+            
+            <div class="projects-grid">
+                <div class="project-item">
+                    <h3>🤖 Maîtrise de l'IA au service de l'humain</h3>
+                    <p>
+                        Développement d'une expertise approfondie en intelligence artificielle : compréhension des mécanismes, maîtrise des outils, vulgarisation pédagogique et utilisation éthique au service de la qualité et de l'humain.
+                    </p>
+                </div>
+                
+                <div class="project-item">
+                    <h3>📱 Workflows digitaux innovants</h3>
+                    <p>
+                        Création de systèmes digitaux avancés pour la collecte et valorisation de données terrain : applications mobiles/tablettes, intégration de la dictée vocale, et extraction automatisée de données pour optimiser les processus métier.
+                    </p>
+                </div>
+                
+                <div class="project-item">
+                    <h3>🔍 R&D Optimisation & Éthique IA</h3>
+                    <p>
+                        Recherche et développement sur l'optimisation des processus métier et la détection des biais dans les systèmes d'intelligence artificielle, contribuant à une utilisation plus responsable et efficace de ces technologies.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION COMPÉTENCES (DÉVELOPPÉE EN PROFONDEUR) ===== -->
+    <section id="skills" class="section">
+        <div class="container">
+            <h2>Compétences</h2>
+            
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3>🏗️ Expertise Technique</h3>
+                    <ul class="skill-list">
+                        <li>Construction et pathologie du bâtiment</li>
+                        <li>Analyse des sinistres et expertise assurance</li>
+                        <li>Évaluation des risques techniques</li>
+                        <li>Diagnostic structurel et sécurité</li>
+                        <li>Normes et réglementations construction</li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h3>🤖 Automatisation & IA</h3>
+                    <ul class="skill-list">
+                        <li>Conception de workflows automatisés (Notion, n8n)</li>
+                        <li>Prompts avancés GPT et optimisation IA</li>
+                        <li>Analyse et extraction automatisée de données</li>
+                        <li>Évaluation critique de l'IA</li>
+                        <li>Éthique numérique et responsabilité IA</li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h3>📋 Gestion de Projet & Innovation</h3>
+                    <ul class="skill-list">
+                        <li>Pilotage de projets hybrides (technique, digital, humain)</li>
+                        <li>Veille technologique et adoption de bonnes pratiques</li>
+                        <li>Gestion de la transformation numérique</li>
+                        <li>Optimisation des processus métier</li>
+                        <li>Innovation managériale et organisationnelle</li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h3>🎓 Pédagogie & Transmission</h3>
+                    <ul class="skill-list">
+                        <li>Vulgarisation de concepts complexes (technique, IA)</li>
+                        <li>Formation d'équipes et accompagnement</li>
+                        <li>Rédaction de supports pédagogiques</li>
+                        <li>Structuration de prompts pour apprentissage</li>
+                        <li>Animation d'ateliers et de formations</li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h3>🌍 Écologie & Responsabilité</h3>
+                    <ul class="skill-list">
+                        <li>Démarche sobriété et impact environnemental</li>
+                        <li>Participation à des collectifs écologiques</li>
+                        <li>Veille sur les enjeux durables du secteur</li>
+                        <li>Intégration RSE dans les projets</li>
+                        <li>Innovation écologique en construction</li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h3>🎨 Créativité & Art</h3>
+                    <ul class="skill-list">
+                        <li>Intégration de la sensibilité artistique dans les process</li>
+                        <li>Design et esthétique appliqués</li>
+                        <li>Rédaction poétique et créative</li>
+                        <li>Chant et participation à 2 groupes de musique</li>
+                        <li>Passion pour l'art, la symbolique et création visuelle</li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h3>🤝 Humanité & Soft Skills</h3>
+                    <ul class="skill-list">
+                        <li>Écoute active et intelligence émotionnelle</li>
+                        <li>Gestion de situations conflictuelles</li>
+                        <li>Empathie et bienveillance professionnelle</li>
+                        <li>Adaptabilité et sens du collectif</li>
+                        <li>Accompagnement au changement</li>
+                    </ul>
+                </div>
+
+                <div class="skill-category">
+                    <h3>🏡 Autonomie</h3>
+                    <ul class="skill-list">
+                        <li>Démarche énergétique : réduction consommation et autoproduction</li>
+                        <li>Autoconsommation alimentaire et potager</li>
+                        <li>Culture verticale et techniques innovantes</li>
+                        <li>Aquaponie et jardins partagés</li>
+                        <li>Autonomie durable et résilience</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION FORMATIONS ===== -->
+    <section id="formations" class="section">
+        <div class="container">
+            <h2>Formations</h2>
+            
+            <div class="formation-item">
+                <h3>🎓 Diplôme d'Ingénieur Génie Civil</h3>
+                <p>Formation technique approfondie en génie civil, structures et construction.</p>
+            </div>
+            
+            <div class="formation-item">
+                <h3>📚 Formations Continues</h3>
+                <p>
+                    Formations spécialisées en assurance, management, digital, intelligence artificielle, 
+                    responsabilité sociale et environnementale (RSE), et pratiques artistiques. 
+                    Démarche de formation continue pour rester à la pointe des évolutions sectorielles.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION ENGAGEMENTS ===== -->
+    <section id="engagements" class="section">
+        <div class="container">
+            <h2>Engagements</h2>
+            
+            <div class="engagement-item">
+                <h3>🌱 Associations Écologiques</h3>
+                <p>
+                    Participation active à des associations écologiques, engagements associatifs 
+                    hors du secteur professionnel traditionnel, contribuant à la sensibilisation 
+                    et à l'action environnementale locale.
+                </p>
+            </div>
+            
+            <div class="engagement-item">
+                <h3>🎨 Initiatives Créatives</h3>
+                <p>
+                    Soutien aux initiatives créatives et écologiques : participation à des projets 
+                    collectifs, organisation d'événements culturels et bénévolat ponctuel dans 
+                    le domaine artistique et environnemental.
+                </p>
+            </div>
+            
+            <div class="engagement-item">
+                <h3>📊 Veille RSE</h3>
+                <p>
+                    Veille active sur la responsabilité sociale et environnementale dans la construction 
+                    et l'innovation. Promotion des bonnes pratiques et participation au développement 
+                    d'approches plus durables dans le secteur.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION CONTACT ===== -->
+    <section id="contact" class="contact section">
+        <div class="container">
+            <h2>Contact</h2>
+            <p>Prêt à collaborer sur vos projets alliant expertise technique, innovation et responsabilité</p>
+            
+            <div class="contact-info">
+                <a href="mailto:dlorthiois@saretec.fr" class="contact-btn">
+                    ✉️ dlorthiois@saretec.fr
+                </a>
+                <a href="https://www.linkedin.com/in/denis-lorthiois" class="contact-btn" target="_blank" rel="noopener noreferrer">
+                    💼 LinkedIn
+                </a>
+                <a href="tel:+33123456789" class="contact-btn">
+                    📞 Téléphone
+                </a>
+                <button class="contact-btn" onclick="downloadCV()">
+                    📄 Télécharger CV
+                </button>
+                <button class="contact-btn" onclick="shareCV()">
+                    🔗 Partager
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== JAVASCRIPT POUR ANIMATIONS ET NAVIGATION ===== -->
+    <script>
+        // ===== ANIMATION AU SCROLL =====
+        function animateOnScroll() {
+            const sections = document.querySelectorAll('.section');
+            const windowHeight = window.innerHeight;
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const sectionVisible = 150;
+                
+                if (sectionTop < windowHeight - sectionVisible) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        // ===== NAVIGATION FLUIDE AVEC OFFSET POUR NAVBAR FIXE =====
+        function smoothScrollToSection(targetId) {
+            const targetElement = document.getElementById(targetId);
+            const navbarHeight = 70; // Hauteur de la navbar fixe
+            const targetPosition = targetElement.offsetTop - navbarHeight;
+            
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
+
+        // ===== GESTION DES CLICS SUR LES LIENS DE NAVIGATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation initiale
+            animateOnScroll();
+            
+            // Écouteur pour le scroll
+            window.addEventListener('scroll', animateOnScroll);
+            
+            // Gestion des liens de navigation
+            const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    smoothScrollToSection(targetId);
+                });
+            });
+            
+            // Animation d'apparition progressive des éléments
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = '0.2s';
+                        entry.target.classList.add('animate-on-scroll');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observer les éléments à animer
+            const elementsToAnimate = document.querySelectorAll('.experience-item, .project-item, .skill-category, .formation-item, .engagement-item');
+            elementsToAnimate.forEach(el => observer.observe(el));
+        });
+
+        // ===== EFFET HOVER AVANCÉ SUR LES CARTES =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.experience-item, .project-item, .skill-category');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // ===== RESPONSIVE NAVBAR =====
+         window.addEventListener('scroll', function() {
+             const navbar = document.querySelector('.navbar');
+             if (window.scrollY > 50) {
+                 navbar.style.background = 'rgba(44, 82, 130, 0.98)';
+             } else {
+                 navbar.style.background = 'rgba(44, 82, 130, 0.95)';
+             }
+         });
+
+         // ===== FONCTIONS POUR PUBLICATION EN LIGNE =====
+         
+         // Fonction pour télécharger le CV en PDF
+         function downloadCV() {
+             // Utilisation de l'API Print pour générer un PDF
+             const originalTitle = document.title;
+             document.title = 'CV_Denis_Lorthiois_Expert_Construction';
+             
+             // Configuration pour l'impression/PDF
+             const style = document.createElement('style');
+             style.textContent = `
+                 @media print {
+                     .navbar { display: none !important; }
+                     .contact-btn { display: none !important; }
+                     body { background: white !important; }
+                     .section { page-break-inside: avoid; }
+                     .hero { margin-top: 0 !important; }
+                 }
+             `;
+             document.head.appendChild(style);
+             
+             // Lancer l'impression
+             window.print();
+             
+             // Nettoyer après impression
+             setTimeout(() => {
+                 document.head.removeChild(style);
+                 document.title = originalTitle;
+             }, 1000);
+         }
+         
+         // Fonction pour partager le CV
+         function shareCV() {
+             const url = window.location.href;
+             const title = 'CV Denis Lorthiois - Expert Construction | Saretec';
+             const text = 'Découvrez le CV de Denis Lorthiois, Expert Construction chez Saretec, spécialisé en IA et innovation durable.';
+             
+             // Vérifier si l'API Web Share est disponible
+             if (navigator.share) {
+                 navigator.share({
+                     title: title,
+                     text: text,
+                     url: url
+                 }).then(() => {
+                     console.log('CV partagé avec succès');
+                 }).catch((error) => {
+                     console.log('Erreur lors du partage:', error);
+                     fallbackShare(url, title, text);
+                 });
+             } else {
+                 fallbackShare(url, title, text);
+             }
+         }
+         
+         // Fonction de partage alternative
+         function fallbackShare(url, title, text) {
+             // Copier l'URL dans le presse-papiers
+             if (navigator.clipboard) {
+                 navigator.clipboard.writeText(url).then(() => {
+                     showNotification('Lien copié dans le presse-papiers !', 'success');
+                 }).catch(() => {
+                     showShareModal(url, title, text);
+                 });
+             } else {
+                 showShareModal(url, title, text);
+             }
+         }
+         
+         // Afficher une modal de partage
+         function showShareModal(url, title, text) {
+             const modal = document.createElement('div');
+             modal.style.cssText = `
+                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                 background: rgba(0,0,0,0.8); z-index: 10000;
+                 display: flex; align-items: center; justify-content: center;
+             `;
+             
+             modal.innerHTML = `
+                 <div style="
+                     background: white; padding: 2rem; border-radius: 8px;
+                     max-width: 500px; width: 90%; text-align: center;
+                 ">
+                     <h3 style="margin-bottom: 1rem; color: #2c5282;">Partager ce CV</h3>
+                     <p style="margin-bottom: 1rem;">Copiez ce lien pour partager :</p>
+                     <input type="text" value="${url}" readonly style="
+                         width: 100%; padding: 0.5rem; margin-bottom: 1rem;
+                         border: 1px solid #ccc; border-radius: 4px;
+                     " onclick="this.select()">
+                     <div style="display: flex; gap: 1rem; justify-content: center;">
+                         <button onclick="copyToClipboard('${url}')" style="
+                             background: #38a169; color: white; border: none;
+                             padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;
+                         ">Copier</button>
+                         <button onclick="closeModal()" style="
+                             background: #e53e3e; color: white; border: none;
+                             padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;
+                         ">Fermer</button>
+                     </div>
+                 </div>
+             `;
+             
+             document.body.appendChild(modal);
+             
+             // Fonctions pour la modal
+             window.copyToClipboard = function(text) {
+                 const textArea = document.createElement('textarea');
+                 textArea.value = text;
+                 document.body.appendChild(textArea);
+                 textArea.select();
+                 document.execCommand('copy');
+                 document.body.removeChild(textArea);
+                 showNotification('Lien copié !', 'success');
+                 closeModal();
+             };
+             
+             window.closeModal = function() {
+                 document.body.removeChild(modal);
+                 delete window.copyToClipboard;
+                 delete window.closeModal;
+             };
+         }
+         
+         // Afficher une notification
+         function showNotification(message, type = 'info') {
+             const notification = document.createElement('div');
+             notification.style.cssText = `
+                 position: fixed; top: 20px; right: 20px; z-index: 10001;
+                 background: ${type === 'success' ? '#38a169' : '#4299e1'};
+                 color: white; padding: 1rem 2rem; border-radius: 4px;
+                 box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                 transform: translateX(100%);
+                 transition: transform 0.3s ease;
+             `;
+             notification.textContent = message;
+             
+             document.body.appendChild(notification);
+             
+             // Animation d'entrée
+             setTimeout(() => {
+                 notification.style.transform = 'translateX(0)';
+             }, 100);
+             
+             // Suppression automatique
+             setTimeout(() => {
+                 notification.style.transform = 'translateX(100%)';
+                 setTimeout(() => {
+                     if (document.body.contains(notification)) {
+                         document.body.removeChild(notification);
+                     }
+                 }, 300);
+             }, 3000);
+         }
+         
+         // ===== OPTIMISATIONS SEO ET ACCESSIBILITÉ =====
+         
+         // Ajouter des métadonnées pour le partage social
+         function addSocialMetaTags() {
+             const metaTags = [
+                 { property: 'og:title', content: 'Denis Lorthiois - Expert Construction | Saretec' },
+                 { property: 'og:description', content: 'Expert Construction spécialisé en IA et innovation durable. Expertise technique, management et responsabilité écologique.' },
+                 { property: 'og:type', content: 'profile' },
+                 { property: 'og:url', content: window.location.href },
+                 { name: 'twitter:card', content: 'summary_large_image' },
+                 { name: 'twitter:title', content: 'Denis Lorthiois - Expert Construction' },
+                 { name: 'twitter:description', content: 'Expert Construction spécialisé en IA et innovation durable' },
+                 { name: 'description', content: 'CV de Denis Lorthiois, Expert Construction chez Saretec. Spécialisé en intelligence artificielle, innovation durable et expertise technique.' },
+                 { name: 'keywords', content: 'expert construction, saretec, intelligence artificielle, innovation durable, expertise technique, assurance' }
+             ];
+             
+             metaTags.forEach(tag => {
+                 const meta = document.createElement('meta');
+                 if (tag.property) meta.setAttribute('property', tag.property);
+                 if (tag.name) meta.setAttribute('name', tag.name);
+                 meta.setAttribute('content', tag.content);
+                 document.head.appendChild(meta);
+             });
+         }
+         
+         // Initialiser les métadonnées au chargement
+         document.addEventListener('DOMContentLoaded', addSocialMetaTags);
+    </script>
+</body>
+</html>
