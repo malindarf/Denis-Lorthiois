@@ -24,6 +24,35 @@
             --border-gray: #e2e8f0;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --neon-blue: #00d4ff;
+            --electric-purple: #8b5cf6;
+            --golden-yellow: #fbbf24;
+            --success-green: #10b981;
+        }
+
+        /* ===== CURSOR PERSONNALISÉ (DÉSACTIVÉ) ===== */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, var(--neon-blue), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+            display: none; /* Désactivé pour éviter les problèmes */
+        }
+        
+        .cursor-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.7;
         }
 
         /* ===== TYPOGRAPHIE ===== */
@@ -112,16 +141,138 @@
 
         /* ===== SECTION HERO ===== */
         .hero {
-            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue), var(--electric-purple));
             color: var(--white);
             padding: 8rem 0 4rem;
             text-align: center;
             margin-top: 70px;
+            position: relative;
+            overflow: hidden;
+            animation: heroGlow 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes heroGlow {
+            0% { box-shadow: inset 0 0 50px rgba(0, 212, 255, 0.1); }
+            100% { box-shadow: inset 0 0 100px rgba(139, 92, 246, 0.2); }
+        }
+        
+        /* ===== EFFET PARALLAX AVANCÉ ===== */
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>') repeat;
+            animation: parallaxMove 20s linear infinite;
+        }
+        
+        @keyframes parallaxMove {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-20px) translateX(-20px); }
         }
 
+        /* ===== ÉLÉMENTS DYNAMIQUES HERO ===== */
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .nature-element {
+            color: var(--accent-green);
+            font-size: 2rem;
+        }
+
+        .tech-element {
+            color: #64B5F6;
+            font-size: 1.5rem;
+        }
+
+        .heart-element {
+            color: #FF8A80;
+            font-size: 1.8rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(5deg); }
+            66% { transform: translateY(-10px) rotate(-3deg); }
+        }
+
+        .floating-element:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 25%; right: 15%; animation-delay: 1s; }
+        .floating-element:nth-child(3) { top: 45%; left: 8%; animation-delay: 2s; }
+        .floating-element:nth-child(4) { top: 35%; right: 10%; animation-delay: 3s; }
+        .floating-element:nth-child(5) { top: 60%; left: 20%; animation-delay: 4s; }
+        .floating-element:nth-child(6) { top: 70%; right: 25%; animation-delay: 5s; }
+        .floating-element:nth-child(7) { top: 20%; left: 70%; animation-delay: 1.5s; }
+        .floating-element:nth-child(8) { top: 50%; right: 60%; animation-delay: 2.5s; }
+        .floating-element:nth-child(9) { top: 80%; left: 60%; animation-delay: 3.5s; }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: particle-float 8s linear infinite;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 6s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 7s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 1.5s; }
+        .particle:nth-child(10) { left: 15%; animation-delay: 2.5s; }
+
         .profile-photo {
-            width: 150px;
-            height: 150px;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
             border: 4px solid var(--white);
             margin: 0 auto 2rem;
@@ -131,6 +282,14 @@
             justify-content: center;
             font-size: 3rem;
             color: var(--text-gray);
+            overflow: hidden;
+        }
+
+        #profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .hero h1 {
@@ -166,6 +325,7 @@
             opacity: 0;
             transform: translateY(30px);
             transition: all 0.6s ease;
+            position: relative;
         }
 
         .section.visible {
@@ -175,6 +335,72 @@
 
         .section:nth-child(even) {
             background: var(--white);
+        }
+        
+        /* ===== INDICATEUR DE PROGRESSION ===== */
+        .progress-indicator {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 4px;
+            height: calc(100vh - 90px);
+            background: rgba(44, 82, 130, 0.2);
+            border-radius: 2px;
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            background: linear-gradient(to bottom, var(--neon-blue), var(--electric-purple), var(--accent-green));
+            border-radius: 2px;
+            transition: height 0.3s ease;
+            height: 0%;
+        }
+        
+
+        
+        /* ===== EFFETS DE MICRO-INTERACTION ===== */
+        .interactive-element {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .interactive-element::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .interactive-element:hover::before {
+            left: 100%;
+        }
+        
+        /* ===== BADGES DE RÉUSSITE ===== */
+        .achievement-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: var(--golden-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            animation: badgePulse 2s infinite;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+        
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         /* ===== SECTION À PROPOS ===== */
@@ -203,15 +429,85 @@
             background: var(--white);
             padding: 2rem;
             margin-bottom: 2rem;
-            border-radius: 8px;
+            border-radius: 15px;
             box-shadow: var(--shadow);
             border-left: 4px solid var(--earth-tone);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
-
+        
+        .experience-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(139, 92, 246, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+        
+        .experience-item:hover::before {
+            opacity: 1;
+        }
+        
         .experience-item:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-left-color: var(--neon-blue);
+        }
+        
+        .experience-item > * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* ===== EFFET DE RÉVÉLATION PROGRESSIVE ===== */
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .experience-item:hover .reveal-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* ===== INDICATEUR DE NIVEAU D'EXPERTISE ===== */
+        .expertise-level {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(var(--neon-blue) 0deg, var(--electric-purple) 180deg, var(--accent-green) 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.9rem;
+            animation: expertiseRotate 10s linear infinite;
+        }
+        
+        @keyframes expertiseRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .expertise-level::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            border-radius: 50%;
+            z-index: -1;
         }
 
         .experience-header {
@@ -342,7 +638,7 @@
         }
 
         .contact-btn {
-            background: var(--accent-green);
+            background: var(--primary-blue);
             color: var(--white);
             padding: 1rem 2rem;
             border: none;
@@ -356,9 +652,24 @@
         }
 
         .contact-btn:hover {
-            background: var(--earth-tone);
+            background: var(--light-blue);
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
+        }
+
+        .security-notice {
+            background: var(--dark-gray) !important;
+            color: var(--white);
+            font-size: 0.9rem;
+            text-align: center;
+            cursor: default;
+            max-width: 300px;
+        }
+
+        .security-notice:hover {
+            background: var(--dark-gray) !important;
+            transform: none;
+            box-shadow: var(--shadow);
         }
 
         /* ===== RESPONSIVE ===== */
@@ -424,9 +735,152 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* ===== STYLES POUR LA SECTION ÉVOLUTION ===== */
+        .timeline-container {
+            margin: 2rem 0;
+        }
+
+        .timeline-decade {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border-radius: 15px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .timeline-decade h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .timeline-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .timeline-item .year {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .timeline-highlight {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)) !important;
+            border-left: 3px solid #FFD700 !important;
+            font-weight: 600;
+            position: relative;
+            overflow: visible;
+        }
+
+        .timeline-highlight::before {
+            content: "⭐";
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #FFD700;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .timeline-highlight:hover {
+            transform: translateX(8px) !important;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3) !important;
+        }
+
+        .evolution-insights {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            border-radius: 15px;
+        }
+
+        .evolution-insights h3 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .insight-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .insight-card p {
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-items {
+                grid-template-columns: 1fr;
+            }
+            
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-decade {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- ===== INDICATEUR DE PROGRESSION ===== -->
+    <div class="progress-indicator">
+        <div class="progress-bar"></div>
+    </div>
+    
+
+    
     <!-- ===== NAVIGATION FIXE ===== -->
     <nav class="navbar">
         <div class="nav-container">
@@ -439,6 +893,7 @@
                 <li><a href="#skills">Compétences</a></li>
                 <li><a href="#formations">Formations</a></li>
                 <li><a href="#engagements">Engagements</a></li>
+                <li><a href="#evolution">Évolution</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -446,9 +901,43 @@
 
     <!-- ===== SECTION HERO / IDENTITÉ ===== -->
     <section id="hero" class="hero">
+        <!-- Éléments dynamiques de fond -->
+        <div class="hero-background">
+            <!-- Éléments flottants nature -->
+            <div class="floating-element nature-element">🌱</div>
+            <div class="floating-element nature-element">🍃</div>
+            <div class="floating-element nature-element">🌿</div>
+            
+            <!-- Éléments technologie -->
+            <div class="floating-element tech-element">⚡</div>
+            <div class="floating-element tech-element">🔧</div>
+            <div class="floating-element tech-element">💡</div>
+            
+            <!-- Éléments bienveillance -->
+            <div class="floating-element heart-element">💚</div>
+            <div class="floating-element heart-element">🤝</div>
+            <div class="floating-element heart-element">✨</div>
+            
+            <!-- Particules flottantes -->
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+        </div>
+        
         <div class="container">
-            <!-- Emplacement pour photo de profil (à remplacer par une vraie image) -->
-            <div class="profile-photo">👤</div>
+            <!-- Photo de profil -->
+            <div class="profile-photo">
+                <img src="photo-profil.jpg" alt="Denis Lorthiois - Photo de profil" id="profile-image">
+            </div>
             <h1>Denis Lorthiois</h1>
             <div class="subtitle">Expert Construction | Saretec</div>
             <div class="tagline">La nature, l'humain et la technologie</div>
@@ -497,30 +986,34 @@
         <div class="container">
             <h2>Expérience Professionnelle</h2>
             
-            <div class="experience-item">
+            <div class="experience-item interactive-element">
+                <div class="expertise-level">13+</div>
                 <div class="experience-header">
                     <div>
                         <h3>Expert Construction</h3>
-                        <p><strong>Saretec</strong></p>
+                        <p><strong>IXI puis Saretec</strong></p>
                     </div>
-                    <div class="experience-period">2012 – aujourd'hui</div>
+                    <div class="experience-period">2011 – aujourd'hui</div>
                 </div>
                 <p>
-                    Gestion d'expertises pour assureurs avec une approche technique rigoureuse et humaine. Responsable de l'analyse documentaire approfondie, de la conduite de projets complexes et de l'optimisation des processus métier. Développement d'une approche basée sur l'humanité et la bienveillance dans la relation client et la résolution de sinistres.
+                    Gestion d'expertises pour assureurs avec une approche technique rigoureuse et humaine. <span class="reveal-text">Responsable de l'analyse documentaire approfondie, de la conduite de projets complexes et de l'optimisation des processus métier.</span> <span class="reveal-text">Développement d'une approche basée sur l'humanité et la bienveillance dans la relation client et la résolution de sinistres.</span>
                 </p>
+                <div class="achievement-badge">🏆</div>
             </div>
 
-            <div class="experience-item">
+            <div class="experience-item interactive-element">
+                <div class="expertise-level">15+</div>
                 <div class="experience-header">
                     <div>
                         <h3>Manager Construction</h3>
-                        <p><strong>Diverses entreprises</strong></p>
+                        <p><strong>Entrepreneur jusqu'à 35 salariés</strong></p>
                     </div>
-                    <div class="experience-period">1997 – 2012</div>
+                    <div class="experience-period">1996 – 2011</div>
                 </div>
                 <p>
-                    Encadrement d'équipes pluridisciplinaires et pilotage de chantiers avec un focus sur l'innovation écologique. Gestion des risques, contrôle budgétaire et formation d'équipes. Animation de démarches qualité et environnementale, contribuant à l'amélioration continue des pratiques du secteur.
+                    Encadrement d'équipes pluridisciplinaires et pilotage de chantiers avec un focus sur l'innovation écologique et industriel. <span class="reveal-text">Gestion des risques, contrôle budgétaire et formation d'équipes.</span> <span class="reveal-text">Animation de démarches qualité et environnementale, contribuant à l'amélioration continue des pratiques du secteur.</span>
                 </p>
+                <div class="achievement-badge">⭐</div>
             </div>
         </div>
     </section>
@@ -578,6 +1071,7 @@
                         <li>Conception de workflows automatisés (Notion, n8n)</li>
                         <li>Prompts avancés GPT et optimisation IA</li>
                         <li>Analyse et extraction automatisée de données</li>
+                        <li>Serveurs locaux pour sécurité et confidentialité des données</li>
                         <li>Évaluation critique de l'IA</li>
                         <li>Éthique numérique et responsabilité IA</li>
                     </ul>
@@ -648,6 +1142,17 @@
                         <li>Autonomie durable et résilience</li>
                     </ul>
                 </div>
+
+                <div class="skill-category">
+                    <h3>📢 Communication & Influence</h3>
+                    <ul class="skill-list">
+                        <li>Rédaction technique et vulgarisation</li>
+                        <li>Présentation orale et storytelling</li>
+                        <li>Négociation commerciale et humaine</li>
+                        <li>Influence positive et leadership par l'exemple</li>
+                        <li>Animation et facilitation collaborative</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
@@ -707,28 +1212,147 @@
         </div>
     </section>
 
-    <!-- ===== SECTION CONTACT ===== -->
-    <section id="contact" class="contact section">
+    <!-- ===== SECTION ÉVOLUTION DES CENTRES D'INTÉRÊT ===== -->
+    <section id="evolution" class="section">
         <div class="container">
-            <h2>Contact</h2>
-            <p>Prêt à collaborer sur vos projets alliant expertise technique, innovation et responsabilité</p>
+            <h2>🚀 Évolution des Centres d'Intérêt</h2>
+            <p class="section-intro">Un parcours de 55 ans d'apprentissage continu et d'adaptation aux évolutions technologiques et sociétales</p>
             
-            <div class="contact-info">
-                <a href="mailto:dlorthiois@saretec.fr" class="contact-btn">
+            <div class="timeline-container">
+                <div class="timeline-decade">
+                    <h3>🌱 Années 70-80 : Fondations Logiques</h3>
+                    <div class="timeline-items">
+                        <div class="timeline-item timeline-highlight"><span class="year">1976</span> 🧠 Génie précoce : "2+2 = ? En quelle base ?" (6 ans)</div>
+                        <div class="timeline-item"><span class="year">1979</span> ♟️ Premier du club d'échecs du collège - Excellence stratégique</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-decade">
+                    <h3>💻 Années 80 : Révolution Numérique</h3>
+                    <div class="timeline-items">
+                        <div class="timeline-item"><span class="year">1980</span> 💻 Découverte de l'informatique sur ZX Spectrum - Premiers pas dans le monde numérique</div>
+                        <div class="timeline-item"><span class="year">1981</span> Technique Programmation hexadécimale</div>
+                        <div class="timeline-item"><span class="year">1982</span> 🎮 Création de jeux programmés sur ordinateur - Développement ludique et créatif</div>
+                        <div class="timeline-item"><span class="year">1984</span> 📡 Fabrication d'un décodeur pirate Canal Plus - Ingénierie électronique avancée</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">1986</span> ⭐ Enseignement informatique à 16 ans : Premier salaire de la mairie pour enseigner l'informatique, incluant l'accompagnement d'un élève trisomique - Précocité pédagogique exceptionnelle</div>
+                        <div class="timeline-item"><span class="year">1988</span> Création Poésie</div>
+                        <div class="timeline-item"><span class="year">1989</span> Bien-être Massage</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-decade">
+                    <h3>🏠 Années 90 : Habitat & Expression</h3>
+                    <div class="timeline-items">
+                        <div class="timeline-item"><span class="year">1990</span> Habitat Domotique</div>
+                        <div class="timeline-item"><span class="year">1991</span> Expression corporelle Danse</div>
+                        <div class="timeline-item"><span class="year">1992</span> Santé Musculation / Cardio</div>
+                        <div class="timeline-item"><span class="year">1993</span> Alimentation Cuisine végétarienne</div>
+                        <div class="timeline-item"><span class="year">1994</span> Communication Réseaux sociaux</div>
+                        <div class="timeline-item"><span class="year">1995</span> Conducteur de travaux dans une entreprise de 50 personnes - Leadership opérationnel et gestion d'équipes</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">1996</span> ⭐ Création d'entreprise : Rachat d'une société de 6 personnes développée à 35 employés en 12 ans - Entrepreneuriat et croissance exceptionnelle</div>
+                        <div class="timeline-item"><span class="year">1997</span> 🚛 Apprentissage conduite d'engins de chantier et camion grue - Compétences techniques opérationnelles</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">1998</span> ⭐ Intégration verticale : Développement branche négoce matériaux - Réduction coûts 35%, CA x12 en 3 ans</div>
+                        <div class="timeline-item"><span class="year">1999</span> 🎵 Apprentissage de la voix au travers du chant et musicalité autour du piano - Expression artistique et sensibilité musicale</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-decade">
+                    <h3>🌍 Années 2000 : Écologie & Management</h3>
+                    <div class="timeline-items">
+                        <div class="timeline-item timeline-highlight"><span class="year">2000</span> ⭐ Partenariats internationaux (Belgique) pour création de maisons BBC écologiques - Vision précurseur du bâtiment durable</div>
+                        <div class="timeline-item"><span class="year">2001</span> 🏗️ Maîtrise complète matériaux écologiques : terre/paille, monomur pierre ponce, béton billes d'argile, ossature bois, isolants naturels - Expertise technique diversifiée</div>
+                        <div class="timeline-item"><span class="year">2002</span> Énergie Panneaux solaires</div>
+                        <div class="timeline-item"><span class="year">2003</span> Nature Aquariophilie</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2004</span> ⭐ Président du club des chefs d'entreprise de la CCI - Leadership institutionnel et réseau professionnel</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2005</span> ⭐ Mise en place semaine 4 jours - Innovation sociale pour améliorer environnement de travail des salariés</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2006</span> ⭐ Création habitat social subventionné AHNA - Intégration verticale devenir notre propre client</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2007</span> ⭐ Délégation complète 100% des tâches - Polyvalence tous postes entreprise, devenu homme clé</div>
+                        <div class="timeline-item"><span class="year">2008</span> Résilience Fermeture d'entreprise</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2009</span> ⭐ Réalisation 2 maisons 125 m² de A à Z en 9 mois - Performance exceptionnelle week-ends uniquement</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-decade">
+                    <h3>🌱 Années 2010 : Autonomie & Innovation</h3>
+                    <div class="timeline-items">
+                        <div class="timeline-item"><span class="year">2010</span> Écologie Permaculture</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2011</span> ⭐ Stratégie du rebond vers l'expertise construction - Reconversion professionnelle et valorisation compétences</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2012</span> ⭐ Innovation aquaponie truite/tilapia 10 m² + mare - Création écosystème complexe biodiversité spontanée</div>
+                        <div class="timeline-item"><span class="year">2013</span> Souveraineté Autonomie alimentaire</div>
+                        <div class="timeline-item"><span class="year">2014</span> Forêt vivrière Forêt comestible</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2015</span> ⭐ Installation panneaux solaires autoconsommation + stockage batterie + rocket stove - Autonomie énergétique complète</div>
+                        <div class="timeline-item"><span class="year">2016</span> Innovation Low tech</div>
+                        <div class="timeline-item"><span class="year">2017</span> AgriTech Serre connectée</div>
+                        <div class="timeline-item"><span class="year">2018</span> Sols vivants Rotation des cultures</div>
+                        <div class="timeline-item"><span class="year">2019</span> Santé Médecine douce</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-decade">
+                    <h3>🚀 Années 2020 : IA & Futur</h3>
+                    <div class="timeline-items">
+                        <div class="timeline-item"><span class="year">2020</span> Préparation Survivalisme</div>
+                        <div class="timeline-item"><span class="year">2021</span> Finance Gestion de patrimoine</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2022</span> ⭐ Vision IA dès apparition - Maîtrise prompts et biais, anticipation potentiel technologique</div>
+                        <div class="timeline-item"><span class="year">2023</span> Valeurs Humanisme</div>
+                        <div class="timeline-item"><span class="year">2024</span> FinTech Trading / Cryptomonnaie</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2025</span> ⭐ Automatisation n8n + codage interfaces Claude/Trae - Adoption immédiate nouvelles fonctionnalités IA</div>
+                        <div class="timeline-item timeline-highlight"><span class="year">2026</span> ⭐ Passion éloquence et robotique - Exploration communication humain-machine et technologies futures</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="evolution-insights">
+                <h3>🎯 Insights de cette Évolution</h3>
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h4>🧠 Apprentissage Continu</h4>
+                        <p>55 ans d'acquisition de nouvelles compétences, démontrant une curiosité intellectuelle exceptionnelle et une capacité d'adaptation remarquable.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🔮 Vision Prospective</h4>
+                        <p>Anticipation des tendances : informatique (1980), réseaux sociaux (1994), écologie (2000), IA (2022), automatisation (2025).</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🌐 Approche Holistique</h4>
+                        <p>Intégration harmonieuse de la technique, de l'humain, de l'écologie et de la créativité dans une vision globale et cohérente.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>⚡ Adaptabilité</h4>
+                        <p>Capacité unique à naviguer entre les révolutions technologiques tout en conservant une approche humaniste et durable.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SECTION CONTACT ET CRÉATIVITÉ ===== -->
+    <section id="contact" class="contact section" style="background: var(--primary-blue); padding: 4rem 0;">
+        <div class="container" style="text-align: center;">
+            <h2 style="color: var(--white); margin-bottom: 1rem;">Contact & Créativité</h2>
+            <p style="color: var(--white); margin-bottom: 3rem; opacity: 0.9; max-width: 800px; margin-left: auto; margin-right: auto;">
+                Prêt à collaborer sur vos projets alliant expertise technique, innovation et responsabilité. Au-delà de l'expertise technique, la musique nourrit ma créativité et enrichit ma vision holistique des projets.
+            </p>
+            
+            <div class="contact-info" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto;">
+                <a href="mailto:dlorthiois@saretec.fr" class="contact-btn" style="background: var(--light-blue);">
                     ✉️ dlorthiois@saretec.fr
                 </a>
-                <a href="https://www.linkedin.com/in/denis-lorthiois" class="contact-btn" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.linkedin.com/in/denis-lorthiois" class="contact-btn" target="_blank" rel="noopener noreferrer" style="background: var(--light-blue);">
                     💼 LinkedIn
                 </a>
-                <a href="tel:+33123456789" class="contact-btn">
-                    📞 Téléphone
-                </a>
-                <button class="contact-btn" onclick="downloadCV()">
+                <div class="contact-btn security-notice" style="background: var(--dark-gray) !important;">
+                    🔒 Face à la montée du hacking je ne peux malheureusement pas vous partager mon numéro de téléphone. Merci de préférer le mail pour me joindre.
+                </div>
+                <button class="contact-btn" onclick="downloadCV()" style="background: var(--light-blue);">
                     📄 Télécharger CV
                 </button>
-                <button class="contact-btn" onclick="shareCV()">
+                <button class="contact-btn" onclick="shareCV()" style="background: var(--light-blue);">
                     🔗 Partager
                 </button>
+                <a href="https://soundcloud.com/denis95490" target="_blank" class="contact-btn" style="background: var(--light-blue);">
+                     🎵 Découvre ma musique
+                 </a>
             </div>
         </div>
     </section>
@@ -799,6 +1423,42 @@
             const elementsToAnimate = document.querySelectorAll('.experience-item, .project-item, .skill-category, .formation-item, .engagement-item');
             elementsToAnimate.forEach(el => observer.observe(el));
         });
+
+        // ===== CURSEUR PERSONNALISÉ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const cursor = document.createElement('div');
+            cursor.className = 'custom-cursor';
+            document.body.appendChild(cursor);
+            
+            const cursorTrail = document.createElement('div');
+            cursorTrail.className = 'cursor-trail';
+            document.body.appendChild(cursorTrail);
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                setTimeout(() => {
+                    cursorTrail.style.left = e.clientX + 'px';
+                    cursorTrail.style.top = e.clientY + 'px';
+                }, 100);
+            });
+        });
+        
+        // ===== INDICATEUR DE PROGRESSION =====
+        const progressBar = document.querySelector('.progress-bar');
+        
+        function updateProgress() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            
+            if (progressBar) progressBar.style.height = scrollPercent + '%';
+        }
+        
+        window.addEventListener('scroll', updateProgress);
+        
+
 
         // ===== EFFET HOVER AVANCÉ SUR LES CARTES =====
         document.addEventListener('DOMContentLoaded', function() {
