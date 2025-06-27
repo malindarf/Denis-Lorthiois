@@ -1676,6 +1676,7 @@
                  this.isPlaying = false;
                  this.volume = 0.3;
                  this.audioElements = {};
+                 this.selectedTheme = 'ambient'; // Thème par défaut
                  this.tracks = {
                      ambient: { file: 'Gladiateur.mp3', name: 'Humain' },
             nature: { file: 'Le dernier samourai.mp3', name: 'Nature' },
@@ -1842,7 +1843,9 @@
                      btn.textContent = '▶️ Activer';
                      btn.style.background = 'var(--accent-green)';
                  } else {
-                     this.playAudio('ambient');
+                     // Utiliser le thème sélectionné ou 'ambient' par défaut
+                     const themeToPlay = this.selectedTheme || 'ambient';
+                     this.playAudio(themeToPlay);
                      btn.textContent = '⏸️ Pause';
                      btn.style.background = '#e53e3e';
                  }
@@ -1907,6 +1910,9 @@
              }
              
              switchTheme(theme) {
+                 // Stocker le thème sélectionné
+                 this.selectedTheme = theme;
+                 
                  if (this.isPlaying) {
                      this.playAudio(theme);
                  }
