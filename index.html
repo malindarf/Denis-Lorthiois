@@ -938,7 +938,7 @@
         <div class="container">
             <!-- Photo de profil -->
             <div class="profile-photo">
-                <img src="./assets/photo-profil-B8qZA7qx.jpg" alt="Denis Lorthiois - Photo de profil" id="profile-image">
+                <img src="assets/photo-profil-B8qZA7qx.jpg" alt="Denis Lorthiois - Photo de profil" id="profile-image">
             </div>
             <h1>Denis Lorthiois</h1>
             <div class="subtitle">Expert Construction | Saretec</div>
@@ -1677,10 +1677,10 @@
                  this.volume = 0.3;
                  this.audioElements = {};
                  this.tracks = {
-                     ambient: { file: './Gladiateur.mp3', name: 'Humain' },
-            nature: { file: './Le dernier samourai.mp3', name: 'Nature' },
-            tech: { file: './Time.mp3', name: 'Tech' },
-            success: { file: './Time.mp3', name: 'Succès' }
+                     ambient: { file: 'Gladiateur.mp3', name: 'Humain' },
+            nature: { file: 'Le dernier samourai.mp3', name: 'Nature' },
+            tech: { file: 'Time.mp3', name: 'Tech' },
+            success: { file: 'Time.mp3', name: 'Succès' }
                  };
                  this.init();
              }
@@ -1703,11 +1703,23 @@
                      audio.src = this.tracks[key].file;
                      audio.loop = true;
                      audio.volume = this.volume;
-                     audio.preload = 'auto';
+                     audio.preload = 'metadata';
+                     audio.crossOrigin = 'anonymous';
                      
-                     // Fallback vers son synthétique si le fichier n'existe pas
-                     audio.addEventListener('error', () => {
-                         console.log(`Fichier audio ${this.tracks[key].file} non trouvé, utilisation du son synthétique`);
+                     console.log(`Tentative de chargement: ${audio.src}`);
+                     
+                     // Gestion des événements de chargement
+                     audio.addEventListener('loadstart', () => {
+                         console.log(`Début du chargement: ${this.tracks[key].file}`);
+                     });
+                     
+                     audio.addEventListener('canplay', () => {
+                         console.log(`Fichier prêt à jouer: ${this.tracks[key].file}`);
+                     });
+                     
+                     audio.addEventListener('error', (e) => {
+                         console.error(`Erreur de chargement audio ${this.tracks[key].file}:`, e);
+                         console.log(`Code d'erreur: ${audio.error ? audio.error.code : 'inconnu'}`);
                          this.tracks[key].synthetic = this.createSyntheticSound(key);
                      });
                      
