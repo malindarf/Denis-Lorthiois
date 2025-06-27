@@ -1665,6 +1665,1064 @@
          
          // Initialiser les métadonnées au chargement
          document.addEventListener('DOMContentLoaded', addSocialMetaTags);
+         
+         // ===== SYSTÈME AUDIO IMMERSIF =====
+         class ImmersiveAudioController {
+             constructor() {
+                 this.audioContext = null;
+                 this.currentTrack = null;
+                 this.isPlaying = false;
+                 this.volume = 0.3;
+                 this.audioElements = {};
+                 this.manualThemeSelected = false; // Nouvelle propriété pour désactiver l'auto-switch
+                 this.tracks = {
+                     ambient: { file: '/sounds/Gladiateur.mp3', name: 'Humain' },
+                     nature: { file: '/sounds/Le dernier samourai.mp3', name: 'Nature' },
+                     tech: { file: '/sounds/Time.mp3', name: 'Tech' },
+                     success: { file: '/sounds/Time.mp3', name: 'Succès' }
+                 };
+                 this.init();
+             }
+             
+             async init() {
+                 try {
+                     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                     this.createAudioElements();
+                     this.createAudioControls();
+                     this.setupContextualAudio();
+                 } catch (error) {
+                     console.log('Audio non supporté:', error);
+                 }
+             }
+             
+             createAudioElements() {
+                 // Créer les éléments audio HTML pour chaque piste
+                 Object.keys(this.tracks).forEach(key => {
+                     const audio = new Audio();
+                     audio.src = this.tracks[key].file;
+                     audio.loop = true;
+                     // Volumes individuels pour chaque thème
+                     if (key === 'nature') {
+                         audio.volume = 0.5; // Volume plus élevé pour Nature
+                     } else if (key === 'tech') {
+                         audio.volume = 0.5; // Volume plus élevé pour Tech
+                     } else {
+                         audio.volume = this.volume; // Volume normal pour Humain
+                     }
+                     audio.preload = 'auto';
+                     
+                     // Fallback vers son synthétique si le fichier n'existe pas
+                     audio.addEventListener('error', () => {
+                         console.log(`Fichier audio ${this.tracks[key].file} non trouvé, utilisation du son synthétique`);
+                         this.tracks[key].synthetic = this.createSyntheticSound(key);
+                     });
+                     
+                     this.audioElements[key] = audio;
+                 });
+             }
+             
+             createSyntheticSound(type) {
+                 if (!this.audioContext) return null;
+                 const oscillator = this.audioContext.createOscillator();
+                 const gainNode = this.audioContext.createGain();
+                 
+                 switch(type) {
+                     case 'ambient':
+                         oscillator.type = 'sine';
+                         oscillator.frequency.setValueAtTime(220, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                         break;
+                     case 'nature':
+                         oscillator.type = 'triangle';
+                         oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                         break;
+                     case 'tech':
+                         oscillator.type = 'square';
+                         oscillator.frequency.setValueAtTime(660, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+                         break;
+                     default:
+                         oscillator.type = 'sine';
+                         oscillator.frequency.setValueAtTime(220, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                 }
+                 
+                 oscillator.connect(gainNode);
+                 gainNode.connect(this.audioContext.destination);
+                 
+                 return { oscillator, gainNode };
+             }
+             
+             createAmbientSound() {
+                 return this.createSyntheticSound('ambient');
+             }
+             
+             createNatureSound() {
+                 if (!this.audioContext) return null;
+                 const oscillator = this.audioContext.createOscillator();
+                 const gainNode = this.audioContext.createGain();
+                 
+                 oscillator.type = 'triangle';
+                 oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
+                 gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                 
+                 oscillator.connect(gainNode);
+                 gainNode.connect(this.audioContext.destination);
+                 
+                 return { oscillator, gainNode };
+             }
+             
+             createTechSound() {
+                 if (!this.audioContext) return null;
+                 const oscillator = this.audioContext.createOscillator();
+                 const gainNode = this.audioContext.createGain();
+                 
+                 oscillator.type = 'square';
+                 oscillator.frequency.setValueAtTime(880, this.audioContext.currentTime);
+                 gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+                 
+                 oscillator.connect(gainNode);
+                 gainNode.connect(this.audioContext.destination);
+                 
+                 return { oscillator, gainNode };
+             }
+             
+             createSuccessSound() {
+                 if (!this.audioContext) return null;
+                 const oscillator = this.audioContext.createOscillator();
+                 const gainNode = this.audioContext.createGain();
+                 
+                 oscillator.type = 'sine';
+                 oscillator.frequency.setValueAtTime(660, this.audioContext.currentTime);
+                 gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                 
+                 oscillator.connect(gainNode);
+                 gainNode.connect(this.audioContext.destination);
+                 
+                 return { oscillator, gainNode };
+             }
+             
+             createAudioControls() {
+                 const audioPanel = document.createElement('div');
+                 audioPanel.innerHTML = `
+                     <div style="position: fixed; top: 80px; left: 20px; z-index: 1001; background: rgba(44, 82, 130, 0.9); padding: 1rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                         <h4 style="color: white; margin-bottom: 0.5rem; font-size: 0.9rem;">🎵 Ambiance Sonore</h4>
+                         <button id="audio-toggle" style="background: var(--accent-green); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-right: 0.5rem;">▶️ Activer</button>
+                         <input type="range" id="volume-control" min="0" max="100" value="30" style="width: 80px;">
+                         <div style="margin-top: 0.5rem;">
+                             <button class="audio-theme" data-theme="ambient" style="background: #4299e1; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 3px; cursor: pointer; margin-right: 0.3rem; font-size: 0.8rem;">Humain</button>
+                             <button class="audio-theme" data-theme="nature" style="background: #38a169; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 3px; cursor: pointer; margin-right: 0.3rem; font-size: 0.8rem;">Nature</button>
+                             <button class="audio-theme" data-theme="tech" style="background: #8b5cf6; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">Tech</button>
+                         </div>
+                     </div>
+                 `;
+                 
+                 document.body.appendChild(audioPanel);
+                 
+                 // Event listeners
+                 document.getElementById('audio-toggle').addEventListener('click', () => this.toggleAudio());
+                 document.getElementById('volume-control').addEventListener('input', (e) => this.setVolume(e.target.value / 100));
+                 
+                 document.querySelectorAll('.audio-theme').forEach(btn => {
+                     btn.addEventListener('click', (e) => {
+                         this.manualThemeSelected = true; // Désactiver l'auto-switch
+                         this.switchTheme(e.target.dataset.theme);
+                     });
+                 });
+             }
+             
+             toggleAudio() {
+                 const btn = document.getElementById('audio-toggle');
+                 if (this.isPlaying) {
+                     this.stopAudio();
+                     btn.textContent = '▶️ Activer';
+                     btn.style.background = 'var(--accent-green)';
+                 } else {
+                     this.playAudio('ambient');
+                     btn.textContent = '⏸️ Pause';
+                     btn.style.background = '#e53e3e';
+                 }
+             }
+             
+             playAudio(theme) {
+                 this.stopAudio();
+                 
+                 if (this.audioElements[theme]) {
+                     const audio = this.audioElements[theme];
+                     // Appliquer les volumes individuels
+                     if (theme === 'nature') {
+                         audio.volume = 0.5; // Volume plus élevé pour Nature
+                     } else if (theme === 'tech') {
+                         audio.volume = 0.5; // Volume plus élevé pour Tech
+                     } else {
+                         audio.volume = this.volume; // Volume normal pour Humain
+                     }
+                     
+                     audio.play().then(() => {
+                         this.currentTrack = theme;
+                         this.isPlaying = true;
+                     }).catch(error => {
+                         console.log(`Erreur lecture ${theme}:`, error);
+                         // Fallback vers son synthétique
+                         if (this.tracks[theme].synthetic) {
+                             this.currentTrack = this.tracks[theme].synthetic;
+                             this.currentTrack.oscillator.start();
+                             this.isPlaying = true;
+                         }
+                     });
+                 }
+             }
+             
+             stopAudio() {
+                 if (this.isPlaying) {
+                     // Arrêter l'audio HTML
+                     Object.values(this.audioElements).forEach(audio => {
+                         if (!audio.paused) {
+                             audio.pause();
+                             audio.currentTime = 0;
+                         }
+                     });
+                     
+                     // Arrêter les sons synthétiques
+                     if (this.currentTrack && typeof this.currentTrack === 'object' && this.currentTrack.oscillator) {
+                         try {
+                             this.currentTrack.oscillator.stop();
+                         } catch (e) {}
+                     }
+                     
+                     this.isPlaying = false;
+                     this.currentTrack = null;
+                 }
+             }
+             
+             setVolume(volume) {
+                 this.volume = volume;
+                 
+                 // Mettre à jour le volume des éléments audio HTML
+                 Object.values(this.audioElements).forEach(audio => {
+                     audio.volume = volume;
+                 });
+                 
+                 // Mettre à jour le volume des sons synthétiques
+                 if (this.currentTrack && typeof this.currentTrack === 'object' && this.currentTrack.gainNode) {
+                     this.currentTrack.gainNode.gain.setValueAtTime(volume * 0.1, this.audioContext.currentTime);
+                 }
+             }
+             
+             switchTheme(theme) {
+                 if (this.isPlaying) {
+                     this.playAudio(theme);
+                 }
+                 
+                 // Mettre à jour l'interface
+                 document.querySelectorAll('.audio-theme').forEach(btn => {
+                     btn.style.opacity = btn.dataset.theme === theme ? '1' : '0.6';
+                 });
+             }
+             
+             setupContextualAudio() {
+                 // Audio contextuel basé sur la section visible (seulement si pas de sélection manuelle)
+                 const observer = new IntersectionObserver((entries) => {
+                     entries.forEach(entry => {
+                         if (entry.isIntersecting && this.isPlaying && !this.manualThemeSelected) {
+                             const section = entry.target;
+                             if (section.id === 'competences' || section.id === 'projets') {
+                                 this.switchTheme('tech');
+                             } else if (section.id === 'valeurs' || section.id === 'evolution') {
+                                 this.switchTheme('nature');
+                             } else {
+                                 this.switchTheme('ambient');
+                             }
+                         }
+                     });
+                 }, { threshold: 0.5 });
+                 
+                 document.querySelectorAll('.section').forEach(section => {
+                     observer.observe(section);
+                 });
+             }
+             
+             playSuccessSound() {
+                 if (!this.audioContext) return;
+                 
+                 const successTrack = this.createSuccessSound();
+                 if (successTrack) {
+                     successTrack.oscillator.start();
+                     successTrack.oscillator.stop(this.audioContext.currentTime + 0.3);
+                 }
+             }
+         }
+         
+         // ===== SYSTÈME DE GAMIFICATION =====
+         class GamificationSystem {
+            constructor() {
+    this.score = 0;
+    this.level = 1;
+    this.achievements = [];
+    this.sectionsVisited = new Set();
+    this.interactionCount = 0;
+    
+    // Créer l'AudioContext une seule fois
+    try {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+        this.audioContext = null;
+        console.log('Audio non disponible');
+    }
+    
+    this.createGameInterface();
+    this.setupProgressTracking();
+    this.setupInteractionTracking();
+}
+             
+             createGameInterface() {
+                 const gamePanel = document.createElement('div');
+                 gamePanel.innerHTML = `
+                     <div id="game-panel" style="position: fixed; top: 200px; left: 20px; z-index: 1001; background: rgba(139, 92, 246, 0.9); padding: 1rem; border-radius: 10px; backdrop-filter: blur(10px); min-width: 200px;">
+                         <h4 style="color: white; margin-bottom: 0.5rem; font-size: 0.9rem;">🎮 Progression</h4>
+                         <div style="color: white; font-size: 0.8rem; margin-bottom: 0.5rem;">Niveau: <span id="current-level">1</span></div>
+                         <div style="color: white; font-size: 0.8rem; margin-bottom: 0.5rem;">Score: <span id="current-score">0</span></div>
+                         <div style="background: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; margin-bottom: 0.5rem;">
+                             <div id="xp-bar" style="background: var(--golden-yellow); height: 100%; border-radius: 4px; width: 0%; transition: width 0.5s ease;"></div>
+                         </div>
+                         <div id="achievements" style="margin-top: 0.5rem;"></div>
+                     </div>
+                 `;
+                 
+                 document.body.appendChild(gamePanel);
+             }
+             
+             addScore(points, reason, skipAchievements = false) {
+                 this.score += points;
+                 this.interactionCount++;
+                 
+                 // Mise à jour du niveau - progression séquentielle stricte
+                 const targetLevel = Math.floor(this.score / 100) + 1;
+                 if (targetLevel > this.level) {
+                     // Monter d'un seul niveau à la fois
+                     this.level++;
+                     this.levelUp();
+                     
+                     // Si on doit encore monter, programmer le prochain niveau
+                     if (targetLevel > this.level) {
+                         setTimeout(() => {
+                             this.addScore(0, '', true); // Récursion pour monter niveau par niveau
+                         }, 2000); // Délai de 2 secondes entre chaque niveau
+                     }
+                 }
+                 
+                 this.updateInterface();
+                 if (points > 0) this.showScorePopup(points, reason);
+                 
+                 // Vérifier les achievements seulement si ce n'est pas un achievement lui-même
+                 if (!skipAchievements) {
+                     this.checkAchievements();
+                 }
+             }
+             
+             levelUp() {
+                 this.showLevelUpAnimation();
+                 
+                 // Son de level up - simple tuuut
+                 this.playTuuutSound();
+             }
+             
+             showLevelUpAnimation() {
+                 const levelUpDiv = document.createElement('div');
+                 levelUpDiv.innerHTML = `
+                     <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10002; background: linear-gradient(45deg, var(--golden-yellow), var(--electric-purple)); padding: 2rem; border-radius: 15px; text-align: center; animation: levelUpPulse 2s ease-out;">
+                         <h2 style="color: white; margin: 0; font-size: 2rem;">🎉 NIVEAU ${this.level}!</h2>
+                         <p style="color: white; margin: 0.5rem 0 0 0;">Félicitations!</p>
+                     </div>
+                 `;
+                 
+                 document.body.appendChild(levelUpDiv);
+                 
+                 setTimeout(() => {
+                     if (document.body.contains(levelUpDiv)) {
+                         document.body.removeChild(levelUpDiv);
+                     }
+                 }, 2000);
+             }
+             
+             showScorePopup(points, reason) {
+                 if (points <= 0) return; // Ne pas afficher les popups vides
+                 
+                 const popup = document.createElement('div');
+                 popup.innerHTML = `
+                     <div style="position: fixed; top: 150px; right: 20px; z-index: 10001; background: var(--success-green); color: white; padding: 0.5rem 1rem; border-radius: 5px; animation: scorePopup 2s ease-out forwards;">
+                         +${points} ${reason}
+                     </div>
+                 `;
+                 
+                 document.body.appendChild(popup);
+                 
+                 setTimeout(() => {
+                     if (document.body.contains(levelUpDiv)) {
+                         document.body.removeChild(popup);
+                     }
+                 }, 2000);
+             }
+             
+             updateInterface() {
+                 document.getElementById('current-level').textContent = this.level;
+                 document.getElementById('current-score').textContent = this.score;
+                 
+                 const xpProgress = (this.score % 100) / 100 * 100;
+                 document.getElementById('xp-bar').style.width = xpProgress + '%';
+             }
+             
+             setupProgressTracking() {
+                 const observer = new IntersectionObserver((entries) => {
+                     entries.forEach(entry => {
+                         if (entry.isIntersecting) {
+                             const sectionId = entry.target.id;
+                             if (!this.sectionsVisited.has(sectionId)) {
+                                 this.sectionsVisited.add(sectionId);
+                                 this.addScore(20, 'Section découverte');
+                             }
+                         }
+                     });
+                 }, { threshold: 0.7 });
+                 
+                 document.querySelectorAll('.section').forEach(section => {
+                     observer.observe(section);
+                 });
+             }
+             
+             setupInteractionTracking() {
+                 // Tracking des clics sur les éléments interactifs
+                 document.addEventListener('click', (e) => {
+                     if (e.target.matches('.skill-item, .project-card, .contact-item, .nav-link')) {
+                         this.addScore(5, 'Interaction');
+                     }
+                 });
+                 
+                 // Tracking du scroll
+                 let scrollTimeout;
+                 window.addEventListener('scroll', () => {
+                     clearTimeout(scrollTimeout);
+                     scrollTimeout = setTimeout(() => {
+                         this.addScore(3, 'Exploration');
+                     }, 1000);
+                 });
+             }
+             
+             playTuuutSound() {
+    if (!this.audioContext) return;
+    
+    try {
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+        
+        oscillator.start();
+        oscillator.stop(this.audioContext.currentTime + 0.5);
+    } catch (e) {
+        console.log('Erreur audio:', e);
+    }
+}
+             
+             checkAchievements() {
+                 const achievements = [
+                     { id: 'explorer', name: 'Explorateur', condition: () => this.score >= 0, icon: '🗺️' },
+                     { id: 'curious', name: 'Curieux', condition: () => this.score >= 100, icon: '🔍' },
+                     { id: 'dedicated', name: 'Dévoué', condition: () => this.score >= 200, icon: '⭐' },
+                     { id: 'master', name: 'Maître', condition: () => this.score >= 300, icon: '👑' }
+                 ];
+                 
+                 achievements.forEach(achievement => {
+                     if (!this.achievements.includes(achievement.id) && achievement.condition()) {
+                         this.unlockAchievement(achievement);
+                     }
+                 });
+             }
+             
+             unlockAchievement(achievement) {
+                 this.achievements.push(achievement.id);
+                 
+                 // Afficher l'achievement
+                 const achievementDiv = document.createElement('div');
+                 achievementDiv.innerHTML = `
+                     <div style="background: var(--golden-yellow); color: white; padding: 0.3rem 0.6rem; border-radius: 3px; margin-bottom: 0.3rem; font-size: 0.7rem; animation: achievementUnlock 3s ease-out;">
+                         ${achievement.icon} ${achievement.name}
+                     </div>
+                 `;
+                 
+                 document.getElementById('achievements').appendChild(achievementDiv);
+                 
+                 // Son de succès - simple tuuut
+                 this.playTuuutSound();
+                 
+                 this.addScore(50, 'Achievement', true);
+             }
+         }
+         
+         // ===== SYSTÈME DE PARTICULES 3D =====
+         class ParticleSystem {
+             constructor() {
+                 this.particles = [];
+                 this.canvas = null;
+                 this.ctx = null;
+                 this.animationId = null;
+                 this.init();
+             }
+             
+             init() {
+                 this.createCanvas();
+                 this.createParticles();
+                 this.animate();
+                 this.setupInteractionEffects();
+             }
+             
+             createCanvas() {
+                 this.canvas = document.createElement('canvas');
+                 this.canvas.style.cssText = `
+                     position: fixed;
+                     top: 0;
+                     left: 0;
+                     width: 100%;
+                     height: 100%;
+                     pointer-events: none;
+                     z-index: 1;
+                     opacity: 0.7;
+                 `;
+                 
+                 document.body.appendChild(this.canvas);
+                 this.ctx = this.canvas.getContext('2d');
+                 this.resizeCanvas();
+                 
+                 window.addEventListener('resize', () => this.resizeCanvas());
+             }
+             
+             resizeCanvas() {
+                 this.canvas.width = window.innerWidth;
+                 this.canvas.height = window.innerHeight;
+             }
+             
+             createParticles() {
+                 const particleCount = Math.min(50, Math.floor(window.innerWidth / 30));
+                 
+                 for (let i = 0; i < particleCount; i++) {
+                     this.particles.push({
+                         x: Math.random() * this.canvas.width,
+                         y: Math.random() * this.canvas.height,
+                         z: Math.random() * 1000,
+                         vx: (Math.random() - 0.5) * 0.5,
+                         vy: (Math.random() - 0.5) * 0.5,
+                         vz: (Math.random() - 0.5) * 2,
+                         size: Math.random() * 3 + 1,
+                         color: this.getRandomColor(),
+                         life: 1,
+                         maxLife: Math.random() * 200 + 100
+                     });
+                 }
+             }
+             
+             getRandomColor() {
+                 const colors = [
+                     'rgba(66, 153, 225, 0.8)',
+                     'rgba(56, 161, 105, 0.8)',
+                     'rgba(139, 92, 246, 0.8)',
+                     'rgba(245, 188, 66, 0.8)',
+                     'rgba(236, 72, 153, 0.8)'
+                 ];
+                 return colors[Math.floor(Math.random() * colors.length)];
+             }
+             
+             updateParticle(particle) {
+                 particle.x += particle.vx;
+                 particle.y += particle.vy;
+                 particle.z += particle.vz;
+                 
+                 // Effet de profondeur 3D
+                 const scale = 1000 / (1000 + particle.z);
+                 particle.screenX = particle.x * scale + this.canvas.width / 2;
+                 particle.screenY = particle.y * scale + this.canvas.height / 2;
+                 particle.screenSize = particle.size * scale;
+                 
+                 // Réinitialiser si hors écran
+                 if (particle.screenX < -50 || particle.screenX > this.canvas.width + 50 ||
+                     particle.screenY < -50 || particle.screenY > this.canvas.height + 50 ||
+                     particle.z > 1000) {
+                     particle.x = (Math.random() - 0.5) * 200;
+                     particle.y = (Math.random() - 0.5) * 200;
+                     particle.z = -1000;
+                     particle.color = this.getRandomColor();
+                 }
+                 
+                 // Animation de vie
+                 particle.life -= 0.5;
+                 if (particle.life <= 0) {
+                     particle.life = particle.maxLife;
+                 }
+             }
+             
+             drawParticle(particle) {
+                 const alpha = Math.sin(particle.life * 0.05) * 0.5 + 0.5;
+                 this.ctx.save();
+                 this.ctx.globalAlpha = alpha;
+                 this.ctx.fillStyle = particle.color;
+                 this.ctx.beginPath();
+                 this.ctx.arc(particle.screenX, particle.screenY, particle.screenSize, 0, Math.PI * 2);
+                 this.ctx.fill();
+                 
+                 // Effet de lueur
+                 this.ctx.shadowBlur = 10;
+                 this.ctx.shadowColor = particle.color;
+                 this.ctx.fill();
+                 
+                 this.ctx.restore();
+             }
+             
+             animate() {
+                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                 
+                 this.particles.forEach(particle => {
+                     this.updateParticle(particle);
+                     this.drawParticle(particle);
+                 });
+                 
+                 this.animationId = requestAnimationFrame(() => this.animate());
+             }
+             
+             setupInteractionEffects() {
+                 let mouseX = 0, mouseY = 0;
+                 
+                 document.addEventListener('mousemove', (e) => {
+                     mouseX = e.clientX;
+                     mouseY = e.clientY;
+                     
+                     // Effet d'attraction des particules vers la souris
+                     this.particles.forEach(particle => {
+                         const dx = mouseX - particle.screenX;
+                         const dy = mouseY - particle.screenY;
+                         const distance = Math.sqrt(dx * dx + dy * dy);
+                         
+                         if (distance < 100) {
+                             const force = (100 - distance) / 100 * 0.02;
+                             particle.vx += dx * force * 0.01;
+                             particle.vy += dy * force * 0.01;
+                         }
+                     });
+                 });
+                 
+                 // Explosion de particules au clic
+                 document.addEventListener('click', (e) => {
+                     this.createExplosion(e.clientX, e.clientY);
+                 });
+             }
+             
+             createExplosion(x, y) {
+                 for (let i = 0; i < 10; i++) {
+                     this.particles.push({
+                         x: (x - this.canvas.width / 2) / 2,
+                         y: (y - this.canvas.height / 2) / 2,
+                         z: 0,
+                         vx: (Math.random() - 0.5) * 5,
+                         vy: (Math.random() - 0.5) * 5,
+                         vz: (Math.random() - 0.5) * 5,
+                         size: Math.random() * 4 + 2,
+                         color: this.getRandomColor(),
+                         life: 100,
+                         maxLife: 100
+                     });
+                 }
+                 
+                 // Nettoyer les particules excédentaires
+                 if (this.particles.length > 100) {
+                     this.particles.splice(0, this.particles.length - 100);
+                 }
+             }
+             
+             destroy() {
+                 if (this.animationId) {
+                     cancelAnimationFrame(this.animationId);
+                 }
+                 if (this.canvas && document.body.contains(this.canvas)) {
+                     document.body.removeChild(this.canvas);
+                 }
+             }
+         }
+         
+         // ===== SYSTÈME D'ANIMATIONS CINÉMATIQUES =====
+         class CinematicAnimations {
+             constructor() {
+                 this.init();
+             }
+             
+             init() {
+                 this.setupScrollAnimations();
+                 this.setupHoverEffects();
+                 this.setupLoadingSequence();
+                 this.setupTransitionEffects();
+             }
+             
+             setupScrollAnimations() {
+                 const observer = new IntersectionObserver((entries) => {
+                     entries.forEach(entry => {
+                         if (entry.isIntersecting) {
+                             this.animateSection(entry.target);
+                         }
+                     });
+                 }, { threshold: 0.3 });
+                 
+                 document.querySelectorAll('.section').forEach(section => {
+                     observer.observe(section);
+                 });
+             }
+             
+             animateSection(section) {
+                 section.style.animation = 'sectionReveal 1s ease-out forwards';
+                 
+                 // Animer les éléments enfants avec un délai
+                 const children = section.querySelectorAll('h2, h3, p, .skill-item, .project-card');
+                 children.forEach((child, index) => {
+                     child.style.animation = `elementSlideIn 0.8s ease-out ${index * 0.1}s forwards`;
+                     child.style.opacity = '0';
+                     child.style.transform = 'translateY(30px)';
+                 });
+             }
+             
+             setupHoverEffects() {
+                 // Effet de morphing 3D sur les cartes
+                 document.querySelectorAll('.project-card, .skill-item').forEach(card => {
+                     card.addEventListener('mouseenter', () => {
+                         card.style.transform = 'perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.05)';
+                         card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
+                         card.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                     });
+                     
+                     card.addEventListener('mouseleave', () => {
+                         card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+                         card.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                     });
+                     
+                     card.addEventListener('mousemove', (e) => {
+                         const rect = card.getBoundingClientRect();
+                         const x = e.clientX - rect.left;
+                         const y = e.clientY - rect.top;
+                         const centerX = rect.width / 2;
+                         const centerY = rect.height / 2;
+                         
+                         const rotateX = (y - centerY) / centerY * 10;
+                         const rotateY = (x - centerX) / centerX * 10;
+                         
+                         card.style.transform = `perspective(1000px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                     });
+                 });
+             }
+             
+             setupLoadingSequence() {
+                 // Séquence d'apparition progressive au chargement
+                 window.addEventListener('load', () => {
+                     const elements = document.querySelectorAll('header, nav, .section');
+                     elements.forEach((element, index) => {
+                         element.style.opacity = '0';
+                         element.style.transform = 'translateY(50px)';
+                         
+                         setTimeout(() => {
+                             element.style.transition = 'all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                             element.style.opacity = '1';
+                             element.style.transform = 'translateY(0)';
+                         }, index * 200);
+                     });
+                 });
+             }
+             
+             setupTransitionEffects() {
+                 // Transitions fluides entre les sections
+                 document.querySelectorAll('.nav-link').forEach(link => {
+                     link.addEventListener('click', (e) => {
+                         e.preventDefault();
+                         const targetId = link.getAttribute('href').substring(1);
+                         const targetSection = document.getElementById(targetId);
+                         
+                         if (targetSection) {
+                             // Effet de zoom avant la transition
+                             document.body.style.transform = 'scale(0.95)';
+                             document.body.style.transition = 'transform 0.3s ease';
+                             
+                             setTimeout(() => {
+                                 targetSection.scrollIntoView({ behavior: 'smooth' });
+                                 document.body.style.transform = 'scale(1)';
+                             }, 150);
+                         }
+                     });
+                 });
+             }
+             
+             createMagicCursor() {
+                 const cursor = document.createElement('div');
+                 cursor.style.cssText = `
+                     position: fixed;
+                     width: 20px;
+                     height: 20px;
+                     background: radial-gradient(circle, rgba(139, 92, 246, 0.8) 0%, transparent 70%);
+                     border-radius: 50%;
+                     pointer-events: none;
+                     z-index: 10000;
+                     transition: transform 0.1s ease;
+                     mix-blend-mode: difference;
+                 `;
+                 
+                 document.body.appendChild(cursor);
+                 
+                 document.addEventListener('mousemove', (e) => {
+                     cursor.style.left = e.clientX - 10 + 'px';
+                     cursor.style.top = e.clientY - 10 + 'px';
+                 });
+                 
+                 // Effet d'agrandissement sur les éléments interactifs
+                 document.querySelectorAll('a, button, .skill-item, .project-card').forEach(element => {
+                     element.addEventListener('mouseenter', () => {
+                         cursor.style.transform = 'scale(2)';
+                         cursor.style.background = 'radial-gradient(circle, rgba(245, 188, 66, 0.8) 0%, transparent 70%)';
+                     });
+                     
+                     element.addEventListener('mouseleave', () => {
+                         cursor.style.transform = 'scale(1)';
+                         cursor.style.background = 'radial-gradient(circle, rgba(139, 92, 246, 0.8) 0%, transparent 70%)';
+                     });
+                 });
+             }
+         }
+         
+         // ===== ANIMATIONS CSS SUPPLÉMENTAIRES =====
+         const additionalStyles = `
+             @keyframes levelUpPulse {
+                 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+                 50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+                 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+             }
+             
+             @keyframes scorePopup {
+                 0% { transform: translateX(100%); opacity: 0; }
+                 20% { transform: translateX(0); opacity: 1; }
+                 80% { transform: translateX(0); opacity: 1; }
+                 100% { transform: translateX(100%); opacity: 0; }
+             }
+             
+             @keyframes achievementUnlock {
+                 0% { transform: scale(0); opacity: 0; }
+                 50% { transform: scale(1.2); opacity: 1; }
+                 100% { transform: scale(1); opacity: 1; }
+             }
+             
+             @keyframes sectionReveal {
+                 0% { opacity: 0; transform: translateY(50px) scale(0.9); }
+                 100% { opacity: 1; transform: translateY(0) scale(1); }
+             }
+             
+             @keyframes elementSlideIn {
+                 0% { opacity: 0; transform: translateY(30px); }
+                 100% { opacity: 1; transform: translateY(0); }
+             }
+             
+             @keyframes particleGlow {
+                 0%, 100% { filter: brightness(1) blur(0px); }
+                 50% { filter: brightness(1.5) blur(2px); }
+             }
+             
+             .floating-element {
+                 transition: all 0.3s ease;
+                 animation: particleGlow 3s ease-in-out infinite;
+             }
+             
+             .floating-element:hover {
+                 transform: scale(1.2) rotate(10deg);
+                 filter: brightness(1.3) drop-shadow(0 0 20px currentColor);
+             }
+             
+             .section {
+                 transform-style: preserve-3d;
+             }
+             
+             .project-card, .skill-item {
+                 transform-style: preserve-3d;
+                 backface-visibility: hidden;
+             }
+             
+             body {
+                 cursor: none;
+             }
+             
+             * {
+                 cursor: none !important;
+             }
+         `;
+         
+         const styleSheet = document.createElement('style');
+         styleSheet.textContent = additionalStyles;
+         document.head.appendChild(styleSheet);
+         
+         // ===== ÉCRAN DE CHARGEMENT IMMERSIF =====
+         class ImmersiveLoader {
+             constructor() {
+                 this.progress = 0;
+                 this.init();
+             }
+             
+             init() {
+                 this.createLoader();
+                 this.startLoading();
+             }
+             
+             createLoader() {
+                 const loader = document.createElement('div');
+                 loader.id = 'immersive-loader';
+                 loader.innerHTML = `
+                     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;">
+                         <div style="text-align: center; margin-bottom: 3rem;">
+                             <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(45deg, var(--electric-purple), var(--golden-yellow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: titleGlow 2s ease-in-out infinite alternate;">Denis Lorthiois</h1>
+                             <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 2rem;">Expérience Immersive en Cours de Chargement...</p>
+                         </div>
+                         
+                         <div style="width: 300px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-bottom: 2rem;">
+                             <div id="loader-progress" style="height: 100%; background: linear-gradient(90deg, var(--electric-purple), var(--golden-yellow)); width: 0%; transition: width 0.3s ease; border-radius: 3px;"></div>
+                         </div>
+                         
+                         <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                             <div class="loader-icon" style="width: 12px; height: 12px; background: var(--accent-green); border-radius: 50%; animation: loaderPulse 1.5s ease-in-out infinite;"></div>
+                             <div class="loader-icon" style="width: 12px; height: 12px; background: var(--electric-purple); border-radius: 50%; animation: loaderPulse 1.5s ease-in-out infinite 0.3s;"></div>
+                             <div class="loader-icon" style="width: 12px; height: 12px; background: var(--golden-yellow); border-radius: 50%; animation: loaderPulse 1.5s ease-in-out infinite 0.6s;"></div>
+                         </div>
+                         
+                         <div id="loading-status" style="font-size: 0.9rem; opacity: 0.6;">Initialisation des systèmes...</div>
+                     </div>
+                 `;
+                 
+                 document.body.appendChild(loader);
+                 
+                 // Ajouter les animations CSS pour le loader
+                 const loaderStyles = `
+                     @keyframes titleGlow {
+                         0% { text-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+                         100% { text-shadow: 0 0 30px rgba(245, 188, 66, 0.8), 0 0 40px rgba(139, 92, 246, 0.3); }
+                     }
+                     
+                     @keyframes loaderPulse {
+                         0%, 100% { transform: scale(1); opacity: 1; }
+                         50% { transform: scale(1.5); opacity: 0.5; }
+                     }
+                 `;
+                 
+                 const styleSheet = document.createElement('style');
+                 styleSheet.textContent = loaderStyles;
+                 document.head.appendChild(styleSheet);
+             }
+             
+             updateProgress(progress, status) {
+                 this.progress = progress;
+                 const progressBar = document.getElementById('loader-progress');
+                 const statusText = document.getElementById('loading-status');
+                 
+                 if (progressBar) {
+                     progressBar.style.width = progress + '%';
+                 }
+                 
+                 if (statusText) {
+                     statusText.textContent = status;
+                 }
+             }
+             
+             async startLoading() {
+                 const steps = [
+                     { progress: 20, status: 'Chargement du système audio...', delay: 500 },
+                     { progress: 40, status: 'Initialisation des particules 3D...', delay: 300 },
+                     { progress: 60, status: 'Configuration de la gamification...', delay: 400 },
+                     { progress: 80, status: 'Préparation des animations...', delay: 300 },
+                     { progress: 100, status: 'Expérience prête!', delay: 500 }
+                 ];
+                 
+                 for (const step of steps) {
+                     await new Promise(resolve => {
+                         setTimeout(() => {
+                             this.updateProgress(step.progress, step.status);
+                             resolve();
+                         }, step.delay);
+                     });
+                 }
+                 
+                 // Attendre un peu puis masquer le loader
+                 setTimeout(() => {
+                     this.hideLoader();
+                 }, 800);
+             }
+             
+             hideLoader() {
+                 const loader = document.getElementById('immersive-loader');
+                 if (loader) {
+                     loader.style.animation = 'fadeOut 1s ease-out forwards';
+                     
+                     setTimeout(() => {
+                         if (document.body.contains(loader)) {
+                             document.body.removeChild(loader);
+                         }
+                         
+                         // Initialiser tous les systèmes après le chargement
+                         this.initializeImmersiveSystems();
+                     }, 1000);
+                 }
+             }
+             
+             initializeImmersiveSystems() {
+                 // Initialiser les systèmes immersifs
+                 window.audioController = new ImmersiveAudioController();
+                 window.gamificationSystem = new GamificationSystem();
+                 window.particleSystem = new ParticleSystem();
+                 window.cinematicAnimations = new CinematicAnimations();
+                 
+                 // Activer le curseur magique
+                 window.cinematicAnimations.createMagicCursor();
+                 
+                 // Message de bienvenue avec effet spécial
+                 setTimeout(() => {
+                     showNotification('🎮 Expérience immersive activée! Explorez pour gagner des points!', 'success');
+                     
+                     // Effet d'explosion de particules de bienvenue
+                     if (window.particleSystem) {
+                         window.particleSystem.createExplosion(window.innerWidth / 2, window.innerHeight / 2);
+                     }
+                 }, 500);
+                 
+                 // Ajouter des conseils d'utilisation
+                 setTimeout(() => {
+                     showNotification('💡 Conseil: Activez l\'audio pour une expérience complète!', 'info');
+                 }, 3000);
+                 
+                 setTimeout(() => {
+                     showNotification('🎯 Explorez les sections pour débloquer des achievements!', 'info');
+                 }, 6000);
+             }
+         }
+         
+         // Ajouter l'animation fadeOut pour le loader
+         const fadeOutStyle = `
+             @keyframes fadeOut {
+                 0% { opacity: 1; transform: scale(1); }
+                 100% { opacity: 0; transform: scale(1.1); }
+             }
+         `;
+         
+         const fadeStyleSheet = document.createElement('style');
+         fadeStyleSheet.textContent = fadeOutStyle;
+         document.head.appendChild(fadeStyleSheet);
+         
+         // ===== INITIALISATION PRINCIPALE =====
+         document.addEventListener('DOMContentLoaded', () => {
+             // Démarrer l'expérience immersive avec l'écran de chargement
+             new ImmersiveLoader();
+         });
     </script>
 </body>
 </html>
