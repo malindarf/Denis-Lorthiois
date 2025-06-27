@@ -94,7 +94,8 @@
             left: 0;
             right: 0;
             background: rgba(44, 82, 130, 0.95);
-            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+                    backdrop-filter: blur(10px);
             z-index: 1000;
             padding: 1rem 0;
             box-shadow: var(--shadow);
@@ -288,7 +289,8 @@
         #profile-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            -o-object-fit: cover;
+               object-fit: cover;
             border-radius: 50%;
         }
 
@@ -936,7 +938,7 @@
         <div class="container">
             <!-- Photo de profil -->
             <div class="profile-photo">
-                <img src="photo-profil.jpg" alt="Denis Lorthiois - Photo de profil" id="profile-image">
+                <img src="/assets/photo-profil-B8qZA7qx.jpg" alt="Denis Lorthiois - Photo de profil" id="profile-image">
             </div>
             <h1>Denis Lorthiois</h1>
             <div class="subtitle">Expert Construction | Saretec</div>
@@ -1674,12 +1676,11 @@
                  this.isPlaying = false;
                  this.volume = 0.3;
                  this.audioElements = {};
-                 this.manualThemeSelected = false; // Nouvelle propriété pour désactiver l'auto-switch
                  this.tracks = {
-                     ambient: { file: '/sounds/Gladiateur.mp3', name: 'Humain' },
-                     nature: { file: '/sounds/Le dernier samourai.mp3', name: 'Nature' },
-                     tech: { file: '/sounds/Time.mp3', name: 'Tech' },
-                     success: { file: '/sounds/Time.mp3', name: 'Succès' }
+                     ambient: { file: '/Gladiateur.mp3', name: 'Humain' },
+                     nature: { file: '/Le dernier samourai.mp3', name: 'Nature' },
+                     tech: { file: '/Time.mp3', name: 'Tech' },
+                     success: { file: '/Time.mp3', name: 'Succès' }
                  };
                  this.init();
              }
@@ -1701,14 +1702,7 @@
                      const audio = new Audio();
                      audio.src = this.tracks[key].file;
                      audio.loop = true;
-                     // Volumes individuels pour chaque thème
-                     if (key === 'nature') {
-                         audio.volume = 0.5; // Volume plus élevé pour Nature
-                     } else if (key === 'tech') {
-                         audio.volume = 0.5; // Volume plus élevé pour Tech
-                     } else {
-                         audio.volume = this.volume; // Volume normal pour Humain
-                     }
+                     audio.volume = this.volume;
                      audio.preload = 'auto';
                      
                      // Fallback vers son synthétique si le fichier n'existe pas
@@ -1730,22 +1724,22 @@
                      case 'ambient':
                          oscillator.type = 'sine';
                          oscillator.frequency.setValueAtTime(220, this.audioContext.currentTime);
-                         gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
                          break;
                      case 'nature':
                          oscillator.type = 'triangle';
                          oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
-                         gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
                          break;
                      case 'tech':
                          oscillator.type = 'square';
                          oscillator.frequency.setValueAtTime(660, this.audioContext.currentTime);
-                         gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
                          break;
                      default:
                          oscillator.type = 'sine';
                          oscillator.frequency.setValueAtTime(220, this.audioContext.currentTime);
-                         gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                         gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
                  }
                  
                  oscillator.connect(gainNode);
@@ -1765,7 +1759,7 @@
                  
                  oscillator.type = 'triangle';
                  oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
-                 gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                 gainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
                  
                  oscillator.connect(gainNode);
                  gainNode.connect(this.audioContext.destination);
@@ -1780,7 +1774,7 @@
                  
                  oscillator.type = 'square';
                  oscillator.frequency.setValueAtTime(880, this.audioContext.currentTime);
-                 gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+                 gainNode.gain.setValueAtTime(0.03, this.audioContext.currentTime);
                  
                  oscillator.connect(gainNode);
                  gainNode.connect(this.audioContext.destination);
@@ -1811,7 +1805,7 @@
                          <button id="audio-toggle" style="background: var(--accent-green); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-right: 0.5rem;">▶️ Activer</button>
                          <input type="range" id="volume-control" min="0" max="100" value="30" style="width: 80px;">
                          <div style="margin-top: 0.5rem;">
-                             <button class="audio-theme" data-theme="ambient" style="background: #4299e1; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 3px; cursor: pointer; margin-right: 0.3rem; font-size: 0.8rem;">Humain</button>
+                             <button class="audio-theme" data-theme="ambient" style="background: #4299e1; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 3px; cursor: pointer; margin-right: 0.3rem; font-size: 0.8rem;">Ambiant</button>
                              <button class="audio-theme" data-theme="nature" style="background: #38a169; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 3px; cursor: pointer; margin-right: 0.3rem; font-size: 0.8rem;">Nature</button>
                              <button class="audio-theme" data-theme="tech" style="background: #8b5cf6; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 3px; cursor: pointer; font-size: 0.8rem;">Tech</button>
                          </div>
@@ -1825,10 +1819,7 @@
                  document.getElementById('volume-control').addEventListener('input', (e) => this.setVolume(e.target.value / 100));
                  
                  document.querySelectorAll('.audio-theme').forEach(btn => {
-                     btn.addEventListener('click', (e) => {
-                         this.manualThemeSelected = true; // Désactiver l'auto-switch
-                         this.switchTheme(e.target.dataset.theme);
-                     });
+                     btn.addEventListener('click', (e) => this.switchTheme(e.target.dataset.theme));
                  });
              }
              
@@ -1850,14 +1841,7 @@
                  
                  if (this.audioElements[theme]) {
                      const audio = this.audioElements[theme];
-                     // Appliquer les volumes individuels
-                     if (theme === 'nature') {
-                         audio.volume = 0.5; // Volume plus élevé pour Nature
-                     } else if (theme === 'tech') {
-                         audio.volume = 0.5; // Volume plus élevé pour Tech
-                     } else {
-                         audio.volume = this.volume; // Volume normal pour Humain
-                     }
+                     audio.volume = this.volume;
                      
                      audio.play().then(() => {
                          this.currentTrack = theme;
@@ -1922,10 +1906,10 @@
              }
              
              setupContextualAudio() {
-                 // Audio contextuel basé sur la section visible (seulement si pas de sélection manuelle)
+                 // Audio contextuel basé sur la section visible
                  const observer = new IntersectionObserver((entries) => {
                      entries.forEach(entry => {
-                         if (entry.isIntersecting && this.isPlaying && !this.manualThemeSelected) {
+                         if (entry.isIntersecting && this.isPlaying) {
                              const section = entry.target;
                              if (section.id === 'competences' || section.id === 'projets') {
                                  this.switchTheme('tech');
