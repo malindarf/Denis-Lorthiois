@@ -938,7 +938,7 @@
         <div class="container">
             <!-- Photo de profil -->
             <div class="profile-photo">
-                <img src="assets/photo-profil-B8qZA7qx.jpg" alt="Denis Lorthiois - Photo de profil" id="profile-image">
+                <img src="/photo-profil-B8qZA7qx.jpg" alt="Denis Lorthiois - Photo de profil" id="profile-image">
             </div>
             <h1>Denis Lorthiois</h1>
             <div class="subtitle">Expert Construction | Saretec</div>
@@ -1918,25 +1918,25 @@
              }
              
              setupContextualAudio() {
-                 // Audio contextuel basé sur la section visible
-                 const observer = new IntersectionObserver((entries) => {
-                     entries.forEach(entry => {
-                         if (entry.isIntersecting && this.isPlaying) {
-                             const section = entry.target;
-                             if (section.id === 'competences' || section.id === 'projets') {
-                                 this.switchTheme('tech');
-                             } else if (section.id === 'valeurs' || section.id === 'evolution') {
-                                 this.switchTheme('nature');
-                             } else {
-                                 this.switchTheme('ambient');
-                             }
-                         }
-                     });
-                 }, { threshold: 0.5 });
-                 
-                 document.querySelectorAll('.section').forEach(section => {
-                     observer.observe(section);
-                 });
+                 // Audio contextuel désactivé pour éviter les changements lors du scroll
+                 // const observer = new IntersectionObserver((entries) => {
+                 //     entries.forEach(entry => {
+                 //         if (entry.isIntersecting && this.isPlaying) {
+                 //             const section = entry.target;
+                 //             if (section.id === 'competences' || section.id === 'projets') {
+                 //                 this.switchTheme('tech');
+                 //             } else if (section.id === 'valeurs' || section.id === 'evolution') {
+                 //                 this.switchTheme('nature');
+                 //             } else {
+                 //                 this.switchTheme('ambient');
+                 //             }
+                 //         }
+                 //     });
+                 // }, { threshold: 0.5 });
+                 // 
+                 // document.querySelectorAll('.section').forEach(section => {
+                 //     observer.observe(section);
+                 // });
              }
              
              playSuccessSound() {
